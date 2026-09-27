@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saheli AI — Final Impact Survey | अंतिम सर्वे</title>
+<style>
+  :root {
+    --primary: #166534; --accent: #FFAB00; --bg: #F0FDF4; --card: #FFFFFF;
+    --text: #1A1A2E; --muted: #6B7280; --border: #D1D5DB;
+    --success: #10B981; --danger: #EF4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  .header {
+    background: linear-gradient(135deg, #166534 0%, #15803D 100%);
+    color: white; padding: 20px 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .logo { font-size: 22px; font-weight: 900; }
+  .logo span { color: #FFAB00; }
+  .lang-toggle { display: flex; gap: 0; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; overflow: hidden; }
+  .lang-btn { padding: 6px 16px; font-size: 13px; font-weight: 700; cursor: pointer; background: transparent; color: rgba(255,255,255,0.7); border: none; transition: all 0.2s; }
+  .lang-btn.active { background: #FFAB00; color: #166534; }
+  .progress-bar-wrap { background: rgba(255,255,255,0.15); height: 5px; border-radius: 3px; margin-top: 10px; }
+  .progress-bar { height: 5px; background: #FFAB00; border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+  .form-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,0.08); border-left: 6px solid var(--primary); margin-bottom: 16px; }
+  .form-card.intro { border-left-color: #FFAB00; }
+  .intro-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+  .intro-subtitle { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .intro-badge { display: inline-flex; align-items: center; gap: 6px; background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; margin-top: 10px; }
+  .reward-box { margin-top: 14px; padding: 14px 16px; background: #F0FDF4; border-radius: 12px; border: 1.5px solid #86EFAC; }
+  .reward-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #166534; margin-bottom: 4px; }
+  .q-num { font-size: 11px; font-weight: 700; color: #FFAB00; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .q-text { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .q-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .required-star { color: var(--danger); }
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-label { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 13.5px; color: #374151; transition: all 0.18s; user-select: none; }
+  .option-label:hover { border-color: var(--primary); background: #F0FDF4; }
+  .option-label.selected { border-color: var(--primary); background: #DCFCE7; color: var(--primary); font-weight: 600; }
+  .option-label input { display: none; }
+  .radio-circle { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; }
+  .option-label.selected .radio-circle { border-color: var(--primary); background: var(--primary); }
+  .radio-dot { width: 8px; height: 8px; border-radius: 50%; background: white; display: none; }
+  .option-label.selected .radio-dot { display: block; }
+  .check-box { width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s; font-size: 11px; color: transparent; }
+  .option-label.selected .check-box { border-color: var(--primary); background: var(--primary); color: white; }
+  .text-input { width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: 10px; font-size: 14px; color: var(--text); background: #FAFAFA; transition: border-color 0.2s; font-family: inherit; }
+  .text-input:focus { outline: none; border-color: var(--primary); background: white; }
+  textarea.text-input { resize: vertical; min-height: 80px; }
+  .scale-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .scale-btn { width: 44px; height: 44px; border: 2px solid var(--border); border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; background: white; color: var(--muted); transition: all 0.18s; display: flex; align-items: center; justify-content: center; }
+  .scale-btn:hover { border-color: var(--primary); color: var(--primary); background: #F0FDF4; }
+  .scale-btn.selected { border-color: var(--primary); background: var(--primary); color: white; }
+  .scale-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .scale-label { font-size: 11px; color: var(--muted); }
+  .error-msg { color: var(--danger); font-size: 12px; margin-top: 6px; display: none; }
+  .error-msg.show { display: block; }
+  .form-card.error-card { border-left-color: var(--danger); animation: shake 0.3s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+  .submit-section { text-align: center; margin-top: 24px; }
+  .submit-btn { background: linear-gradient(135deg, #166534, #15803D); color: white; border: none; padding: 16px 48px; border-radius: 12px; font-size: 16px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px; box-shadow: 0 4px 20px rgba(22,101,52,0.35); transition: all 0.2s; }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(22,101,52,0.4); }
+  .success-screen { display: none; text-align: center; padding: 60px 24px; background: white; border-radius: 20px; margin-top: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+  .success-icon { font-size: 64px; margin-bottom: 20px; }
+  .success-title { font-size: 24px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .success-msg { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 400px; margin: 0 auto; }
+  .success-note { margin-top: 20px; padding: 14px 20px; background: #F0FDF4; border-radius: 12px; border: 1px solid #86EFAC; font-size: 13px; color: #166534; }
+  .lang-en { display: none; }
+  .lang-hi { display: block; }
+  body.lang-en .lang-hi { display: none; }
+  body.lang-en .lang-en { display: block; }
+  @media (max-width: 480px) { .form-card { padding: 20px 16px; } .scale-btn { width: 36px; height: 36px; font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">🏆 <span>Saheli</span> AI — Final Survey</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('hi')" id="btn-hi">हिंदी</button>
+      <button class="lang-btn" onclick="setLang('en')" id="btn-en">English</button>
+    </div>
+  </div>
+  <div style="max-width:680px;margin:8px auto 0;">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="formArea">
+
+  <!-- INTRO -->
+  <div class="form-card intro">
+    <div class="intro-title lang-hi">Final Impact Survey — अंतिम सर्वे 🏆</div>
+    <div class="intro-title lang-en">Final Impact Survey — Career Growth Measurement 🏆</div>
+    <div class="intro-subtitle lang-hi">आपने Saheli AI के साथ बहुत काम किया! अब सिर्फ <strong>3 minute</strong> का final survey।</div>
+    <div class="intro-subtitle lang-en">You have worked hard with Saheli AI! Now just a <strong>3-minute</strong> final survey.</div>
+    <div class="intro-badge">🎁 <span class="lang-hi">Complete करने पर Certificate + Data Voucher</span><span class="lang-en">Complete to earn Certificate + Data Voucher</span></div>
+    <div class="reward-box">
+      <div class="reward-item">🏅 <span class="lang-hi"><strong>Corporate Readiness Certificate</strong> — LinkedIn-worthy, Canva-designed, professionally formatted</span><span class="lang-en"><strong>Corporate Readiness Certificate</strong> — LinkedIn-worthy, Canva-designed</span></div>
+      <div class="reward-item">📲 <span class="lang-hi"><strong>1GB Data Voucher</strong> — Jio / Airtel recharge (24 hours में WhatsApp पर)</span><span class="lang-en"><strong>1GB Data Voucher</strong> — Jio / Airtel recharge within 24 hours</span></div>
+      <div class="reward-item">🌸 <span class="lang-hi">आपकी anonymous success story report में जाएगी — future girls को inspire करेगी</span><span class="lang-en">Your anonymous success story inspires future participants</span></div>
+    </div>
+  </div>
+
+  <!-- Q1 Secret Code -->
+  <div class="form-card" id="card-q1">
+    <div class="q-num">Question 1 of 12</div>
+    <div class="q-text lang-hi">अपना Secret Session Code लिखिए <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Enter your Secret Session Code <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(WhatsApp पर आपको भेजा गया था — e.g. SAHELI-PRIYA-L3-2026)</div>
+    <div class="q-sub lang-en">(Sent to you via WhatsApp — e.g. SAHELI-PRIYA-L3-2026)</div>
+    <input class="text-input" type="text" id="q1" placeholder="SAHELI-XXXXX-L3-2026" oninput="updateProgress()">
+    <div class="error-msg" id="err-q1">Code required है / Code is required</div>
+  </div>
+
+  <!-- Q2 Name -->
+  <div class="form-card" id="card-q2">
+    <div class="q-num">Question 2 of 12</div>
+    <div class="q-text lang-hi">अपना first name लिखिए (same as pre-survey में दिया था) <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Enter your first name (same as in pre-survey) <span class="required-star">*</span></div>
+    <input class="text-input" type="text" id="q2" placeholder="e.g. Priya, Anjali..." oninput="updateProgress()">
+    <div class="error-msg" id="err-q2">Name required है / Name is required</div>
+  </div>
+
+  <!-- Q3 Resume Confidence NOW -->
+  <div class="form-card" id="card-q3">
+    <div class="q-num">Question 3 of 12</div>
+    <div class="q-text lang-hi">1 से 5 तक — <u>ABHI</u> आपका resume corporate hiring standards meet करता है? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Scale 1–5 — <u>NOW</u>, does your resume meet corporate hiring standards? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(पहले वाला score याद है? Compare करो अपने आप से!)</div>
+    <div class="q-sub lang-en">(Remember your earlier score? Compare yourself now!)</div>
+    <div class="scale-wrap" id="scale-q3">
+      <button class="scale-btn" onclick="selectScale('q3',1,5,this)">1</button>
+      <button class="scale-btn" onclick="selectScale('q3',2,5,this)">2</button>
+      <button class="scale-btn" onclick="selectScale('q3',3,5,this)">3</button>
+      <button class="scale-btn" onclick="selectScale('q3',4,5,this)">4</button>
+      <button class="scale-btn" onclick="selectScale('q3',5,5,this)">5</button>
+    </div>
+    <div class="scale-labels">
+      <span class="scale-label lang-hi">बिल्कुल नहीं</span><span class="scale-label lang-en">Not at all</span>
+      <span class="scale-label lang-hi">पूरी Confidence</span><span class="scale-label lang-en">Fully Confident</span>
+    </div>
+    <div class="error-msg" id="err-q3">Value select करें / Please select a value</div>
+  </div>
+
+  <!-- Q4 Overall Confidence NOW -->
+  <div class="form-card" id="card-q4">
+    <div class="q-num">Question 4 of 12</div>
+    <div class="q-text lang-hi">1 से 10 — <u>ABHI</u> job मिलने की overall confidence score? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Scale 1–10 — <u>NOW</u>, overall job success confidence score? <span class="required-star">*</span></div>
+    <div class="scale-wrap" id="scale-q4">
+      <button class="scale-btn" onclick="selectScale('q4',1,10,this)">1</button>
+      <button class="scale-btn" onclick="selectScale('q4',2,10,this)">2</button>
+      <button class="scale-btn" onclick="selectScale('q4',3,10,this)">3</button>
+      <button class="scale-btn" onclick="selectScale('q4',4,10,this)">4</button>
+      <button class="scale-btn" onclick="selectScale('q4',5,10,this)">5</button>
+      <button class="scale-btn" onclick="selectScale('q4',6,10,this)">6</button>
+      <button class="scale-btn" onclick="selectScale('q4',7,10,this)">7</button>
+      <button class="scale-btn" onclick="selectScale('q4',8,10,this)">8</button>
+      <button class="scale-btn" onclick="selectScale('q4',9,10,this)">9</button>
+      <button class="scale-btn" onclick="selectScale('q4',10,10,this)">10</button>
+    </div>
+    <div class="scale-labels">
+      <span class="scale-label lang-hi">बहुत कम</span><span class="scale-label lang-en">Very Low</span>
+      <span class="scale-label lang-hi">बहुत Confident</span><span class="scale-label lang-en">Very Confident</span>
+    </div>
+    <div class="error-msg" id="err-q4">Value select करें / Please select a value</div>
+  </div>
+
+  <!-- Q5 New Role Discovery -->
+  <div class="form-card" id="card-q5">
+    <div class="q-num">Question 5 of 12</div>
+    <div class="q-text lang-hi">Saheli AI use करने के बाद क्या आपको नए realistic entry-level job roles पता चले? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">After using Saheli AI, did you discover new realistic entry-level job roles? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q5">
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, बहुत सारे नए roles पता चले</span><span class="lang-en">Yes, discovered many new roles</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, 2-3 specific roles clearly समझ आई</span><span class="lang-en">Yes, 2–3 specific roles became clear</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">थोड़ा, but मैं अभी भी confused हूँ</span><span class="lang-en">Somewhat, but I'm still confused</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">नहीं, कुछ नया नहीं मिला</span><span class="lang-en">No, didn't find anything new</span></label>
+    </div>
+    <div class="error-msg" id="err-q5">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q6 Mock Interview Count -->
+  <div class="form-card" id="card-q6">
+    <div class="q-num">Question 6 of 12</div>
+    <div class="q-text lang-hi">कितने mock interview questions Saheli AI के साथ practice किए? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">How many mock interview questions did you practice with Saheli AI? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q6">
+      <label class="option-label" onclick="selectOpt('q6',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>1–3 questions</span></label>
+      <label class="option-label" onclick="selectOpt('q6',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>4–7 questions</span></label>
+      <label class="option-label" onclick="selectOpt('q6',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>8–15 questions</span></label>
+      <label class="option-label" onclick="selectOpt('q6',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">15 से ज़्यादा</span><span class="lang-en">More than 15</span></label>
+      <label class="option-label" onclick="selectOpt('q6',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Mock interview feature use नहीं किया</span><span class="lang-en">Didn't use the mock interview feature</span></label>
+    </div>
+    <div class="error-msg" id="err-q6">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q7 Resume Changes (Checkboxes) -->
+  <div class="form-card" id="card-q7">
+    <div class="q-num">Question 7 of 12</div>
+    <div class="q-text lang-hi">Resume audit के बाद resume में क्या actual changes किए? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">After the resume audit, what actual changes did you make? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(एक से ज़्यादा select कर सकती हैं)</div>
+    <div class="q-sub lang-en">(Select all that apply)</div>
+    <div class="options" id="opts-q7">
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Quantified achievements add किए (numbers डाले)</span><span class="lang-en">Added quantified achievements (numbers)</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Skills section restructure किया</span><span class="lang-en">Restructured the skills section</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Action verbs use किए</span><span class="lang-en">Used stronger action verbs</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Formatting improve की</span><span class="lang-en">Improved formatting and layout</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Objective statement rewrite की</span><span class="lang-en">Rewrote the objective statement</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'check')"><div class="check-box">✓</div><span class="lang-hi">कुछ नहीं किया अभी तक</span><span class="lang-en">Haven't made changes yet</span></label>
+    </div>
+    <div class="error-msg" id="err-q7">कम से कम एक option select करें / Select at least one option</div>
+  </div>
+
+  <!-- Q8 Best Feature -->
+  <div class="form-card" id="card-q8">
+    <div class="q-num">Question 8 of 12</div>
+    <div class="q-text lang-hi">Saheli AI का सबसे helpful feature कौन सा लगा? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Which Saheli AI feature was most helpful to you? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q8">
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Resume score + specific feedback</span><span class="lang-en">Resume score + specific feedback</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Job role matching suggestions</span><span class="lang-en">Job role matching suggestions</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Mock interview Q&A practice</span><span class="lang-en">Mock interview Q&A practice</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Bilingual Hinglish responses</span><span class="lang-en">Bilingual Hinglish responses</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Privacy / Anonymous mode</span><span class="lang-en">Privacy / Anonymous mode</span></label>
+    </div>
+    <div class="error-msg" id="err-q8">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q9 Feedback (Text) -->
+  <div class="form-card" id="card-q9">
+    <div class="q-num">Question 9 of 12</div>
+    <div class="q-text lang-hi">क्या कुछ frustrating या confusing लगा Saheli AI में?</div>
+    <div class="q-text lang-en">What felt frustrating or confusing in Saheli AI?</div>
+    <div class="q-sub lang-hi">(Optional — but your honest feedback helps improve the tool)</div>
+    <div class="q-sub lang-en">(Optional — your honest feedback helps improve the tool)</div>
+    <textarea class="text-input" id="q9" placeholder="Yahan type karo... / Type here..." oninput="updateProgress()"></textarea>
+  </div>
+
+  <!-- Q10 NPS -->
+  <div class="form-card" id="card-q10">
+    <div class="q-num">Question 10 of 12</div>
+    <div class="q-text lang-hi">0 से 10 — Saheli AI अपनी trusted saheli को recommend करेंगी? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Scale 0–10 — Would you recommend Saheli AI to a trusted friend? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(0 = Never, 10 = Zaroor haan!)</div>
+    <div class="q-sub lang-en">(0 = Never, 10 = Definitely Yes!)</div>
+    <div class="scale-wrap" id="scale-q10">
+      <button class="scale-btn" onclick="selectScale('q10',0,10,this)">0</button>
+      <button class="scale-btn" onclick="selectScale('q10',1,10,this)">1</button>
+      <button class="scale-btn" onclick="selectScale('q10',2,10,this)">2</button>
+      <button class="scale-btn" onclick="selectScale('q10',3,10,this)">3</button>
+      <button class="scale-btn" onclick="selectScale('q10',4,10,this)">4</button>
+      <button class="scale-btn" onclick="selectScale('q10',5,10,this)">5</button>
+      <button class="scale-btn" onclick="selectScale('q10',6,10,this)">6</button>
+      <button class="scale-btn" onclick="selectScale('q10',7,10,this)">7</button>
+      <button class="scale-btn" onclick="selectScale('q10',8,10,this)">8</button>
+      <button class="scale-btn" onclick="selectScale('q10',9,10,this)">9</button>
+      <button class="scale-btn" onclick="selectScale('q10',10,10,this)">10</button>
+    </div>
+    <div class="scale-labels">
+      <span class="scale-label">0 — Never</span>
+      <span class="scale-label">10 — Zaroor! / Definitely!</span>
+    </div>
+    <div class="error-msg" id="err-q10">Value select करें / Please select a value</div>
+  </div>
+
+  <!-- Q11 Overall Impact -->
+  <div class="form-card" id="card-q11">
+    <div class="q-num">Question 11 of 12</div>
+    <div class="q-text lang-hi">Overall rating: Saheli AI ने आपके career journey में कितना impact दिया? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Overall rating: How much impact did Saheli AI have on your career journey? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q11">
+      <label class="option-label" onclick="selectOpt('q11',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">⭐⭐⭐⭐⭐ Life-changing — बिल्कुल real help मिली</span><span class="lang-en">⭐⭐⭐⭐⭐ Life-changing — genuinely helpful</span></label>
+      <label class="option-label" onclick="selectOpt('q11',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">⭐⭐⭐⭐ Good — definitely useful था</span><span class="lang-en">⭐⭐⭐⭐ Good — definitely useful</span></label>
+      <label class="option-label" onclick="selectOpt('q11',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">⭐⭐⭐ Average — ठीक था, better हो सकता था</span><span class="lang-en">⭐⭐⭐ Average — okay, could be better</span></label>
+      <label class="option-label" onclick="selectOpt('q11',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">⭐⭐ Low — expectations से कम था</span><span class="lang-en">⭐⭐ Low — below my expectations</span></label>
+    </div>
+    <div class="error-msg" id="err-q11">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q12 UPI for reward -->
+  <div class="form-card" id="card-q12">
+    <div class="q-num">Question 12 of 12</div>
+    <div class="q-text lang-hi">Data voucher पाने के लिए अपना UPI ID या Phone number दें 📲</div>
+    <div class="q-text lang-en">Share your UPI ID or Phone number to receive your data voucher 📲</div>
+    <div class="q-sub lang-hi">(Optional — sirf reward लेना हो तो भरें। यह information किसी के साथ share नहीं होगी।)</div>
+    <div class="q-sub lang-en">(Optional — only fill if you want the data reward. This info is never shared.)</div>
+    <input class="text-input" type="text" id="q12" placeholder="UPI ID या / or Phone number (optional)" oninput="updateProgress()">
+  </div>
+
+  <div class="submit-section">
+    <button class="submit-btn" onclick="submitForm()">
+      <span class="lang-hi">🏆 Submit करें &amp; Certificate पाएं</span>
+      <span class="lang-en">🏆 Submit &amp; Claim Your Certificate</span>
+    </button>
+    <p style="margin-top:12px;font-size:12px;color:#6B7280;" class="lang-hi">Certificate 24 hours में WhatsApp पर आएगा 🌸</p>
+    <p style="margin-top:12px;font-size:12px;color:#6B7280;" class="lang-en">Certificate will arrive on WhatsApp within 24 hours 🌸</p>
+  </div>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🎓🌸</div>
+    <div class="success-title lang-hi">Bahut shukriya! Aap amazing hain!</div>
+    <div class="success-title lang-en">Thank you so much! You are amazing!</div>
+    <p class="success-msg lang-hi">Aapka impact data record ho gaya. Certificate aur data voucher 24 hours mein WhatsApp pe milega. Aap is mission ka hissa hain! 💙</p>
+    <p class="success-msg lang-en">Your impact data has been recorded. Certificate and data voucher will arrive on WhatsApp within 24 hours. You are part of this mission! 💙</p>
+    <div class="success-note lang-hi">📱 WhatsApp pe check karo — aur apna certificate LinkedIn pe zaroor daalo! 🏆</div>
+    <div class="success-note lang-en">📱 Check your WhatsApp — and upload your certificate to LinkedIn! 🏆</div>
+  </div>
+</div>
+
+<script>
+  const answers = {};
+  function setLang(lang) {
+    if (lang === 'en') { document.body.classList.add('lang-en'); document.getElementById('btn-en').classList.add('active'); document.getElementById('btn-hi').classList.remove('active'); }
+    else { document.body.classList.remove('lang-en'); document.getElementById('btn-hi').classList.add('active'); document.getElementById('btn-en').classList.remove('active'); }
+  }
+  function selectOpt(qId, label, type) {
+    const container = document.getElementById('opts-' + qId);
+    if (type === 'radio') {
+      container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      answers[qId] = label.querySelector('span').textContent.trim();
+    } else {
+      label.classList.toggle('selected');
+      const selected = Array.from(container.querySelectorAll('.option-label.selected')).map(l => l.querySelector('span').textContent.trim());
+      answers[qId] = selected;
+    }
+    clearError(qId); updateProgress();
+  }
+  function selectScale(qId, val, max, btn) {
+    const container = document.getElementById('scale-' + qId);
+    container.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[qId] = val;
+    clearError(qId); updateProgress();
+  }
+  function clearError(qId) {
+    const err = document.getElementById('err-' + qId);
+    const card = document.getElementById('card-' + qId);
+    if (err) err.classList.remove('show');
+    if (card) card.classList.remove('error-card');
+  }
+  function updateProgress() {
+    const filled = [
+      document.getElementById('q1').value.trim(),
+      document.getElementById('q2').value.trim(),
+      answers['q3'], answers['q4'], answers['q5'], answers['q6'],
+      answers['q7'] && answers['q7'].length > 0 ? true : null,
+      answers['q8'], answers['q10'], answers['q11']
+    ].filter(Boolean).length;
+    document.getElementById('progressBar').style.width = (filled / 10 * 100) + '%';
+  }
+  function submitForm() {
+    let valid = true; let scrolled = false;
+    const checks = [
+      { id: 'q1', type: 'text' }, { id: 'q2', type: 'text' },
+      { id: 'q3', type: 'scale' }, { id: 'q4', type: 'scale' },
+      { id: 'q5', type: 'radio' }, { id: 'q6', type: 'radio' },
+      { id: 'q7', type: 'check' }, { id: 'q8', type: 'radio' },
+      { id: 'q10', type: 'scale' }, { id: 'q11', type: 'radio' }
+    ];
+    checks.forEach(c => {
+      let ok = false;
+      if (c.type === 'text') ok = document.getElementById(c.id).value.trim().length > 0;
+      else if (c.type === 'radio' || c.type === 'scale') ok = answers[c.id] !== undefined;
+      else if (c.type === 'check') ok = answers[c.id] && answers[c.id].length > 0;
+      if (!ok) {
+        valid = false;
+        document.getElementById('err-' + c.id).classList.add('show');
+        document.getElementById('card-' + c.id).classList.add('error-card');
+        if (!scrolled) { document.getElementById('card-' + c.id).scrollIntoView({ behavior: 'smooth', block: 'center' }); scrolled = true; }
+      }
+    });
+    if (!valid) return;
+    const responseData = {
+      timestamp: new Date().toISOString(),
+      secretCode: document.getElementById('q1').value.trim(),
+      name: document.getElementById('q2').value.trim(),
+      resumeConfidence_POST: answers['q3'],
+      jobConfidence_POST: answers['q4'],
+      roleDiscovery: answers['q5'],
+      mockInterviewCount: answers['q6'],
+      resumeChanges: answers['q7'],
+      bestFeature: answers['q8'],
+      feedback: document.getElementById('q9').value.trim(),
+      npsScore: answers['q10'],
+      overallImpact: answers['q11'],
+      upiForReward: document.getElementById('q12').value.trim()
+    };
+    // 1. Dual Backup: Save to localStorage immediately
+    const all = JSON.parse(localStorage.getItem('saheli_post_survey') || '[]');
+    all.push(responseData);
+    localStorage.setItem('saheli_post_survey', JSON.stringify(all));
+
+    // 2. Submit to Saheli AI Backend Database (Port 3000)
+    fetch("http://localhost:3000/pilot/survey/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(responseData)
+    })
+    .then(r => r.json())
+    .catch(err => {
+      console.log("Local offline mode: Stored in localStorage safely.");
+    });
+
+    document.getElementById('formArea').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('progressBar').style.width = '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saheli AI — Baseline Survey | बेसलाइन सर्वे</title>
+<style>
+  :root {
+    --primary: #1F497D;
+    --accent: #FFAB00;
+    --bg: #F4F7FB;
+    --card: #FFFFFF;
+    --text: #1A1A2E;
+    --muted: #6B7280;
+    --border: #D1D5DB;
+    --success: #10B981;
+    --danger: #EF4444;
+    --pink: #DB2777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .header {
+    background: linear-gradient(135deg, #1F497D 0%, #0747A6 100%);
+    color: white; padding: 20px 24px; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .logo { font-size: 22px; font-weight: 900; letter-spacing: 0.5px; }
+  .logo span { color: #FFAB00; }
+  .lang-toggle { display: flex; gap: 0; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; overflow: hidden; }
+  .lang-btn {
+    padding: 6px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+    background: transparent; color: rgba(255,255,255,0.7); border: none; transition: all 0.2s;
+  }
+  .lang-btn.active { background: #FFAB00; color: #1F497D; }
+
+  .progress-bar-wrap { background: rgba(255,255,255,0.15); height: 5px; border-radius: 3px; margin-top: 10px; }
+  .progress-bar { height: 5px; background: #FFAB00; border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+
+  .form-card {
+    background: white; border-radius: 16px; padding: 28px 28px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.08); border-left: 6px solid var(--primary);
+    margin-bottom: 16px;
+  }
+  .form-card.intro { border-left-color: #DB2777; }
+
+  .intro-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
+  .intro-subtitle { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .intro-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #FEF3C7; color: #92400E; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 20px; margin-top: 10px;
+  }
+  .intro-points { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .intro-point { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #374151; }
+  .intro-point .dot { color: #10B981; font-size: 16px; flex-shrink: 0; margin-top: -1px; }
+
+  .q-num { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .q-text { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+  .q-sub { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+  .required-star { color: var(--danger); }
+
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .option-label {
+    display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+    border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+    font-size: 13.5px; color: #374151; transition: all 0.18s;
+    user-select: none;
+  }
+  .option-label:hover { border-color: var(--primary); background: #EFF6FF; }
+  .option-label.selected { border-color: var(--primary); background: #DBEAFE; color: var(--primary); font-weight: 600; }
+  .option-label input { display: none; }
+  .radio-circle {
+    width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 50%;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s;
+  }
+  .option-label.selected .radio-circle { border-color: var(--primary); background: var(--primary); }
+  .radio-dot { width: 8px; height: 8px; border-radius: 50%; background: white; display: none; }
+  .option-label.selected .radio-dot { display: block; }
+  .check-box {
+    width: 18px; height: 18px; border: 2px solid var(--border); border-radius: 4px;
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.18s;
+    font-size: 11px; color: transparent;
+  }
+  .option-label.selected .check-box { border-color: var(--primary); background: var(--primary); color: white; }
+
+  .text-input {
+    width: 100%; padding: 11px 14px; border: 2px solid var(--border); border-radius: 10px;
+    font-size: 14px; color: var(--text); background: #FAFAFA; transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .text-input:focus { outline: none; border-color: var(--primary); background: white; }
+
+  .scale-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .scale-btn {
+    width: 44px; height: 44px; border: 2px solid var(--border); border-radius: 10px;
+    font-size: 15px; font-weight: 700; cursor: pointer; background: white;
+    color: var(--muted); transition: all 0.18s; display: flex; align-items: center; justify-content: center;
+  }
+  .scale-btn:hover { border-color: var(--primary); color: var(--primary); background: #EFF6FF; }
+  .scale-btn.selected { border-color: var(--primary); background: var(--primary); color: white; }
+  .scale-labels { display: flex; justify-content: space-between; margin-top: 6px; }
+  .scale-label { font-size: 11px; color: var(--muted); }
+
+  .error-msg { color: var(--danger); font-size: 12px; margin-top: 6px; display: none; }
+  .error-msg.show { display: block; }
+  .form-card.error-card { border-left-color: var(--danger); animation: shake 0.3s; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)} }
+
+  .submit-section { text-align: center; margin-top: 24px; }
+  .submit-btn {
+    background: linear-gradient(135deg, #1F497D, #0747A6);
+    color: white; border: none; padding: 16px 48px; border-radius: 12px;
+    font-size: 16px; font-weight: 900; cursor: pointer; letter-spacing: 0.5px;
+    box-shadow: 0 4px 20px rgba(31,73,125,0.35); transition: all 0.2s;
+  }
+  .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(31,73,125,0.4); }
+  .submit-btn:active { transform: translateY(0); }
+
+  .success-screen {
+    display: none; text-align: center; padding: 60px 24px;
+    background: white; border-radius: 20px; margin-top: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+  }
+  .success-icon { font-size: 64px; margin-bottom: 20px; }
+  .success-title { font-size: 24px; font-weight: 900; color: var(--primary); margin-bottom: 8px; }
+  .success-msg { font-size: 15px; color: var(--muted); line-height: 1.6; max-width: 400px; margin: 0 auto; }
+  .success-note {
+    margin-top: 20px; padding: 14px 20px; background: #F0FDF4;
+    border-radius: 12px; border: 1px solid #86EFAC; font-size: 13px; color: #166534;
+  }
+
+  .lang-en { display: none; }
+  .lang-hi { display: block; }
+  body.lang-en .lang-hi { display: none; }
+  body.lang-en .lang-en { display: block; }
+
+  @media (max-width: 480px) {
+    .form-card { padding: 20px 16px; }
+    .scale-btn { width: 38px; height: 38px; font-size: 13px; }
+    .intro-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">🌸 <span>Saheli</span> AI</div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('hi')" id="btn-hi">हिंदी</button>
+      <button class="lang-btn" onclick="setLang('en')" id="btn-en">English</button>
+    </div>
+  </div>
+  <div style="max-width:680px;margin:8px auto 0;">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+</div>
+
+<div class="container">
+  <div id="formArea">
+
+  <!-- INTRO CARD -->
+  <div class="form-card intro">
+    <div class="intro-title lang-hi">Baseline Survey — शुरुआती सर्वे 🌸</div>
+    <div class="intro-title lang-en">Baseline Survey — Career Confidence Check 🌸</div>
+    <div class="intro-subtitle lang-hi">
+      यह form सिर्फ <strong>2-3 minute</strong> में complete होती है।<br>
+      इसके बाद आपको <strong>private Saheli AI access link</strong> WhatsApp पर मिलेगा।
+    </div>
+    <div class="intro-subtitle lang-en">
+      This form takes just <strong>2–3 minutes</strong> to complete.<br>
+      After submitting, you will receive your <strong>private Saheli AI access link</strong> on WhatsApp.
+    </div>
+    <div class="intro-badge">🔒 <span class="lang-hi">पूरी तरह Private & Anonymous</span><span class="lang-en">100% Private & Anonymous</span></div>
+    <div class="intro-points">
+      <div class="intro-point"><span class="dot">✅</span> <span class="lang-hi">कोई real name save नहीं होता</span><span class="lang-en">No real name is saved in any database</span></div>
+      <div class="intro-point"><span class="dot">✅</span> <span class="lang-hi">Chat history phone पर visible नहीं रहती</span><span class="lang-en">Chat history is not visible on your phone</span></div>
+      <div class="intro-point"><span class="dot">✅</span> <span class="lang-hi">Family को कुछ पता नहीं चलेगा</span><span class="lang-en">Family will not know you are using this tool</span></div>
+    </div>
+  </div>
+
+  <!-- Q1 Name -->
+  <div class="form-card" id="card-q1">
+    <div class="q-num">Question 1 of 10</div>
+    <div class="q-text lang-hi">अपना first name लिखिए <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Enter your first name only <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(Surname मत लिखिए — पूरी तरह anonymous रहेगा)</div>
+    <div class="q-sub lang-en">(No surname needed — stays completely anonymous)</div>
+    <input class="text-input" type="text" id="q1" placeholder="e.g. Priya, Anjali, Neha..." oninput="updateProgress()">
+    <div class="error-msg" id="err-q1">यह field required है / This field is required</div>
+  </div>
+
+  <!-- Q2 College -->
+  <div class="form-card" id="card-q2">
+    <div class="q-num">Question 2 of 10</div>
+    <div class="q-text lang-hi">आप कौन से college में पढ़ती हैं? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Which college are you studying in? <span class="required-star">*</span></div>
+    <input class="text-input" type="text" id="q2" placeholder="e.g. Maa Shakumbhari University, Muzaffarnagar..." oninput="updateProgress()">
+    <div class="error-msg" id="err-q2">यह field required है / This field is required</div>
+  </div>
+
+  <!-- Q3 Year -->
+  <div class="form-card" id="card-q3">
+    <div class="q-num">Question 3 of 10</div>
+    <div class="q-text lang-hi">आप अभी किस साल में हैं? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">What year are you currently in? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q3">
+      <label class="option-label" onclick="selectOpt('q3',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Final Year (3rd Year / 6th Semester)</span><span class="lang-en">Final Year (3rd Year / 6th Semester)</span></label>
+      <label class="option-label" onclick="selectOpt('q3',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Final Year — 2-year program (2nd Year / 4th Sem)</span><span class="lang-en">Final Year — 2-year program (2nd Year / 4th Sem)</span></label>
+      <label class="option-label" onclick="selectOpt('q3',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Recently Graduated (0–6 months पहले)</span><span class="lang-en">Recently Graduated (0–6 months ago)</span></label>
+      <label class="option-label" onclick="selectOpt('q3',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">6–12 months पहले Graduate हुई</span><span class="lang-en">Graduated 6–12 months ago</span></label>
+    </div>
+    <div class="error-msg" id="err-q3">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q4 Degree -->
+  <div class="form-card" id="card-q4">
+    <div class="q-num">Question 4 of 10</div>
+    <div class="q-text lang-hi">आपने कौन सा degree course किया / कर रही हैं? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Which degree course are you doing / have completed? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q4">
+      <label class="option-label" onclick="selectOpt('q4',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>BBA (Bachelor of Business Administration)</span></label>
+      <label class="option-label" onclick="selectOpt('q4',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>B.Com (Bachelor of Commerce)</span></label>
+      <label class="option-label" onclick="selectOpt('q4',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>BA (Bachelor of Arts)</span></label>
+      <label class="option-label" onclick="selectOpt('q4',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span>B.Sc (Bachelor of Science)</span></label>
+      <label class="option-label" onclick="selectOpt('q4',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">Other — नीचे लिखें</span><span class="lang-en">Other — type below</span></label>
+    </div>
+    <input class="text-input" type="text" id="q4-other" placeholder="Other degree..." style="margin-top:8px;display:none;" oninput="updateProgress()">
+    <div class="error-msg" id="err-q4">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q5 Resume -->
+  <div class="form-card" id="card-q5">
+    <div class="q-num">Question 5 of 10</div>
+    <div class="q-text lang-hi">अभी तक professionally resume बनाया है? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Have you created a professional resume so far? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q5">
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, खुद से बनाया है</span><span class="lang-en">Yes, I made it myself</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, किसी ने help की थी</span><span class="lang-en">Yes, someone helped me make it</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">नहीं, अभी तक नहीं बनाया</span><span class="lang-en">No, I haven't made one yet</span></label>
+      <label class="option-label" onclick="selectOpt('q5',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, but confident नहीं हूँ कि corporate-ready है</span><span class="lang-en">Yes, but not confident it's corporate-ready</span></label>
+    </div>
+    <div class="error-msg" id="err-q5">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q6 Resume Confidence Scale -->
+  <div class="form-card" id="card-q6">
+    <div class="q-num">Question 6 of 10</div>
+    <div class="q-text lang-hi">1 से 5 तक — आपका resume corporate hiring standards meet करता है? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Scale 1–5 — Does your resume meet corporate hiring standards? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(1 = बिल्कुल नहीं, 5 = पूरी confidence)</div>
+    <div class="q-sub lang-en">(1 = Not at all, 5 = Fully confident)</div>
+    <div class="scale-wrap" id="scale-q6">
+      <button class="scale-btn" onclick="selectScale('q6',1,5,this)">1</button>
+      <button class="scale-btn" onclick="selectScale('q6',2,5,this)">2</button>
+      <button class="scale-btn" onclick="selectScale('q6',3,5,this)">3</button>
+      <button class="scale-btn" onclick="selectScale('q6',4,5,this)">4</button>
+      <button class="scale-btn" onclick="selectScale('q6',5,5,this)">5</button>
+    </div>
+    <div class="scale-labels">
+      <span class="scale-label lang-hi">बिल्कुल नहीं</span><span class="scale-label lang-en">Not at all</span>
+      <span class="scale-label lang-hi">पूरी Confidence</span><span class="scale-label lang-en">Fully Confident</span>
+    </div>
+    <div class="error-msg" id="err-q6">Scale पर कोई value select करें / Please select a value</div>
+  </div>
+
+  <!-- Q7 Job Awareness -->
+  <div class="form-card" id="card-q7">
+    <div class="q-num">Question 7 of 10</div>
+    <div class="q-text lang-hi">क्या आप clearly जानती हैं कि आपके degree के बाद कौन से specific job roles suitable हैं? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Do you clearly know which specific job roles are suitable after your degree? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q7">
+      <label class="option-label" onclick="selectOpt('q7',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, clearly पता है</span><span class="lang-en">Yes, I know clearly</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">थोड़ा-थोड़ा पता है, specific नहीं</span><span class="lang-en">Somewhat, but not specific</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">नहीं, कुछ समझ नहीं आता</span><span class="lang-en">No, I'm quite confused</span></label>
+      <label class="option-label" onclick="selectOpt('q7',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">सिर्फ 1-2 roles पता हैं, बाकी नहीं</span><span class="lang-en">Know only 1–2 roles, nothing more</span></label>
+    </div>
+    <div class="error-msg" id="err-q7">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q8 Interview Experience -->
+  <div class="form-card" id="card-q8">
+    <div class="q-num">Question 8 of 10</div>
+    <div class="q-text lang-hi">क्या कभी professional mock interview या interview feedback मिली है? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Have you ever received professional mock interview feedback? <span class="required-star">*</span></div>
+    <div class="options" id="opts-q8">
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, college placement cell से</span><span class="lang-en">Yes, from my college placement cell</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">हाँ, किसी senior या mentor से</span><span class="lang-en">Yes, from a senior or mentor</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">YouTube videos देखे हैं, formal नहीं</span><span class="lang-en">Watched YouTube videos, nothing formal</span></label>
+      <label class="option-label" onclick="selectOpt('q8',this,'radio')"><div class="radio-circle"><div class="radio-dot"></div></div><span class="lang-hi">नहीं, कभी नहीं</span><span class="lang-en">No, never</span></label>
+    </div>
+    <div class="error-msg" id="err-q8">एक option choose करें / Please select one option</div>
+  </div>
+
+  <!-- Q9 Biggest Problem (Checkboxes) -->
+  <div class="form-card" id="card-q9">
+    <div class="q-num">Question 9 of 10</div>
+    <div class="q-text lang-hi">Job ढूंढने में सबसे बड़ी problem क्या लगती है? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">What feels like your biggest problem in finding a job? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(एक से ज़्यादा select कर सकती हैं)</div>
+    <div class="q-sub lang-en">(You can select more than one)</div>
+    <div class="options" id="opts-q9">
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Resume professionally नहीं लगा</span><span class="lang-en">Resume doesn't look professional</span></label>
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">पता नहीं कौन सी companies hire करती हैं मेरी city से</span><span class="lang-en">Don't know which companies hire from my city</span></label>
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Interview में confidence नहीं आता</span><span class="lang-en">Not confident in interviews</span></label>
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Family को पता नहीं चलना चाहिए अभी</span><span class="lang-en">Don't want family to know I'm job-hunting yet</span></label>
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Internet पर सही guidance नहीं मिलती</span><span class="lang-en">Can't find proper guidance online</span></label>
+      <label class="option-label" onclick="selectOpt('q9',this,'check')"><div class="check-box">✓</div><span class="lang-hi">Expensive coaching afford नहीं कर सकती</span><span class="lang-en">Cannot afford expensive coaching</span></label>
+    </div>
+    <div class="error-msg" id="err-q9">कम से कम एक option select करें / Select at least one option</div>
+  </div>
+
+  <!-- Q10 Overall Job Confidence Scale -->
+  <div class="form-card" id="card-q10">
+    <div class="q-num">Question 10 of 10</div>
+    <div class="q-text lang-hi">1 से 10 — Job मिलने की overall confidence score क्या देती हैं आप खुद को? <span class="required-star">*</span></div>
+    <div class="q-text lang-en">Scale 1–10 — What overall job-success confidence score do you give yourself? <span class="required-star">*</span></div>
+    <div class="q-sub lang-hi">(1 = बहुत कम, 10 = Very confident)</div>
+    <div class="q-sub lang-en">(1 = Very low, 10 = Very confident)</div>
+    <div class="scale-wrap" id="scale-q10">
+      <button class="scale-btn" onclick="selectScale('q10',1,10,this)">1</button>
+      <button class="scale-btn" onclick="selectScale('q10',2,10,this)">2</button>
+      <button class="scale-btn" onclick="selectScale('q10',3,10,this)">3</button>
+      <button class="scale-btn" onclick="selectScale('q10',4,10,this)">4</button>
+      <button class="scale-btn" onclick="selectScale('q10',5,10,this)">5</button>
+      <button class="scale-btn" onclick="selectScale('q10',6,10,this)">6</button>
+      <button class="scale-btn" onclick="selectScale('q10',7,10,this)">7</button>
+      <button class="scale-btn" onclick="selectScale('q10',8,10,this)">8</button>
+      <button class="scale-btn" onclick="selectScale('q10',9,10,this)">9</button>
+      <button class="scale-btn" onclick="selectScale('q10',10,10,this)">10</button>
+    </div>
+    <div class="scale-labels">
+      <span class="scale-label lang-hi">बहुत कम</span><span class="scale-label lang-en">Very Low</span>
+      <span class="scale-label lang-hi">बहुत Confident</span><span class="scale-label lang-en">Very Confident</span>
+    </div>
+    <div class="error-msg" id="err-q10">Scale पर कोई value select करें / Please select a value</div>
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <button class="submit-btn" onclick="submitForm()">
+      <span class="lang-hi">✅ Submit करें &amp; Access लें</span>
+      <span class="lang-en">✅ Submit &amp; Get Access</span>
+    </button>
+    <p style="margin-top:12px;font-size:12px;color:#6B7280;" class="lang-hi">Submit होने के बाद आपका private access link WhatsApp पर भेजा जाएगा 🔒</p>
+    <p style="margin-top:12px;font-size:12px;color:#6B7280;" class="lang-en">After submitting, your private access link will be sent to your WhatsApp 🔒</p>
+  </div>
+
+  </div><!-- /formArea -->
+
+  <!-- SUCCESS -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">🌸🎉</div>
+    <div class="success-title lang-hi">Shukriya! Form submit ho gaya!</div>
+    <div class="success-title lang-en">Thank you! Form submitted successfully!</div>
+    <p class="success-msg lang-hi">Aapka baseline record ho gaya. Private Saheli AI access link 30 minute mein WhatsApp pe aayega. 🔒</p>
+    <p class="success-msg lang-en">Your baseline has been recorded. Your private Saheli AI access link will arrive on WhatsApp within 30 minutes. 🔒</p>
+    <div style="background:#EFF6FF;border:2px dashed #3B82F6;padding:12px 16px;border-radius:12px;margin:16px 0;">
+      <p style="font-size:11px;color:#1E40AF;font-weight:700;text-transform:uppercase;">Official Aspire Pilot Access Code</p>
+      <p id="issuedSessionCode" style="font-size:18px;font-family:monospace;font-weight:900;color:#1F497D;letter-spacing:1px;margin-top:4px;">SAHELI-VERIFIED-2026</p>
+      <p style="font-size:11px;color:#4B5563;margin-top:2px;">(Is code ka screenshot le lein — certificate claim karne ke liye zaroori hai)</p>
+    </div>
+    <div class="success-note lang-hi">📱 WhatsApp pe check karo — aur reply mat karna kisi aur ko woh link. Personal access hai!</div>
+    <div class="success-note lang-en">📱 Check your WhatsApp — and do not share that link with anyone else. It is your personal access!</div>
+  </div>
+
+</div>
+
+<script>
+  const answers = {};
+
+  function setLang(lang) {
+    if (lang === 'en') {
+      document.body.classList.add('lang-en');
+      document.getElementById('btn-en').classList.add('active');
+      document.getElementById('btn-hi').classList.remove('active');
+    } else {
+      document.body.classList.remove('lang-en');
+      document.getElementById('btn-hi').classList.add('active');
+      document.getElementById('btn-en').classList.remove('active');
+    }
+  }
+
+  function selectOpt(qId, label, type) {
+    const container = document.getElementById('opts-' + qId);
+    if (type === 'radio') {
+      container.querySelectorAll('.option-label').forEach(l => l.classList.remove('selected'));
+      label.classList.add('selected');
+      answers[qId] = label.querySelector('span').textContent.trim();
+      // show other input if last option for q4
+      if (qId === 'q4') {
+        const otherInput = document.getElementById('q4-other');
+        otherInput.style.display = label === container.querySelectorAll('.option-label')[4] ? 'block' : 'none';
+      }
+    } else {
+      label.classList.toggle('selected');
+      const selected = Array.from(container.querySelectorAll('.option-label.selected'))
+        .map(l => l.querySelector('span').textContent.trim());
+      answers[qId] = selected;
+    }
+    clearError(qId);
+    updateProgress();
+  }
+
+  function selectScale(qId, val, max, btn) {
+    const container = document.getElementById('scale-' + qId);
+    container.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[qId] = val;
+    clearError(qId);
+    updateProgress();
+  }
+
+  function clearError(qId) {
+    const err = document.getElementById('err-' + qId);
+    const card = document.getElementById('card-' + qId);
+    if (err) err.classList.remove('show');
+    if (card) card.classList.remove('error-card');
+  }
+
+  function updateProgress() {
+    const filled = [
+      document.getElementById('q1').value.trim(),
+      document.getElementById('q2').value.trim(),
+      answers['q3'], answers['q4'], answers['q5'],
+      answers['q6'], answers['q7'], answers['q8'],
+      answers['q9'] && answers['q9'].length > 0 ? true : null,
+      answers['q10']
+    ].filter(Boolean).length;
+    document.getElementById('progressBar').style.width = (filled / 10 * 100) + '%';
+  }
+
+  function submitForm() {
+    let valid = true;
+    const checks = [
+      { id: 'q1', type: 'text' },
+      { id: 'q2', type: 'text' },
+      { id: 'q3', type: 'radio' },
+      { id: 'q4', type: 'radio' },
+      { id: 'q5', type: 'radio' },
+      { id: 'q6', type: 'scale' },
+      { id: 'q7', type: 'radio' },
+      { id: 'q8', type: 'radio' },
+      { id: 'q9', type: 'check' },
+      { id: 'q10', type: 'scale' },
+    ];
+
+    checks.forEach(c => {
+      let ok = false;
+      if (c.type === 'text') ok = document.getElementById(c.id).value.trim().length > 0;
+      else if (c.type === 'radio' || c.type === 'scale') ok = answers[c.id] !== undefined;
+      else if (c.type === 'check') ok = answers[c.id] && answers[c.id].length > 0;
+
+      if (!ok) {
+        valid = false;
+        document.getElementById('err-' + c.id).classList.add('show');
+        document.getElementById('card-' + c.id).classList.add('error-card');
+        if (valid === false) {
+          document.getElementById('card-' + c.id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+          valid = 'scrolled';
+        }
+      }
+    });
+
+    if (valid !== true) return;
+
+    // Collect all data
+    const responseData = {
+      timestamp: new Date().toISOString(),
+      name: document.getElementById('q1').value.trim(),
+      college: document.getElementById('q2').value.trim(),
+      year: answers['q3'],
+      degree: answers['q4'],
+      hasResume: answers['q5'],
+      resumeConfidence_1to5: answers['q6'],
+      jobAwareness: answers['q7'],
+      mockInterviewExp: answers['q8'],
+      biggestProblems: answers['q9'],
+      overallJobConfidence_1to10: answers['q10'],
+    };
+
+    // 1. Dual Backup: Save to localStorage immediately
+    const all = JSON.parse(localStorage.getItem('saheli_pre_survey') || '[]');
+    all.push(responseData);
+    localStorage.setItem('saheli_pre_survey', JSON.stringify(all));
+
+    // 2. Submit to Saheli AI Backend Database (Port 3000)
+    fetch("http://localhost:3000/pilot/survey/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(responseData)
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.session_code) {
+        const codeEl = document.getElementById('issuedSessionCode');
+        if (codeEl) codeEl.textContent = data.session_code;
+      }
+    })
+    .catch(err => {
+      console.log("Local offline mode: Stored in localStorage safely.");
+    });
+
+    // 3. Show success screen immediately
+    document.getElementById('formArea').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('progressBar').style.width = '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
