@@ -11,13 +11,13 @@
     --success: #10B981; --danger: #EF4444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .header {
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; margin: 0; padding: 0; overflow-x: hidden; }
+  .header { width: 100%; border-radius: 0 0 16px 16px; margin: 0; 
     background: linear-gradient(135deg, #166534 0%, #15803D 100%);
     color: white; padding: 20px 24px; position: sticky; top: 0; z-index: 100;
     box-shadow: 0 2px 12px rgba(0,0,0,0.2);
   }
-  .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .header-inner { max-width: 100%; width: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .logo { font-size: 22px; font-weight: 900; }
   .logo span { color: #FFAB00; }
   .lang-toggle { display: flex; gap: 0; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; overflow: hidden; }
@@ -25,7 +25,7 @@
   .lang-btn.active { background: #FFAB00; color: #166534; }
   .progress-bar-wrap { background: rgba(255,255,255,0.15); height: 5px; border-radius: 3px; margin-top: 10px; }
   .progress-bar { height: 5px; background: #FFAB00; border-radius: 3px; transition: width 0.4s ease; width: 0%; }
-  .container { max-width: 680px; margin: 0 auto; padding: 24px 16px 60px; }
+  .container { max-width: 680px; margin: 0 auto; padding: 12px 8px 40px; width: 100%; }
   .form-card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,0.08); border-left: 6px solid var(--primary); margin-bottom: 16px; }
   .form-card.intro { border-left-color: #FFAB00; }
   .intro-title { font-size: 22px; font-weight: 900; color: var(--primary); margin-bottom: 6px; }
