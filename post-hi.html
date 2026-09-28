@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Saheli AI — अंतिम Impact Survey</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#F0FDF4;color:#1A1A2E;overflow-x:hidden}
+.hdr{background:linear-gradient(135deg,#166534,#15803D);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.hdr-row{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.logo{font-size:19px;font-weight:900}.logo span{color:#FFAB00}
+.lang-bar{display:flex;gap:6px}
+.lang-bar a{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,255,255,.15);color:#E2E8F0;transition:.15s}
+.lang-bar a.active{background:#FFAB00;color:#166534}
+.pbar-wrap{max-width:680px;margin:8px auto 0;background:rgba(255,255,255,.2);height:4px;border-radius:3px}
+.pbar{height:4px;background:#FFAB00;border-radius:3px;width:0;transition:width .3s}
+.wrap{max-width:680px;margin:0 auto;padding:14px 12px 50px}
+.card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 1px 6px rgba(0,0,0,.07);border-left:5px solid #166534;margin-bottom:12px}
+.card.intro{border-left-color:#FFAB00}
+.intro-title{font-size:18px;font-weight:900;color:#166534;margin-bottom:5px}
+.intro-sub{font-size:12.5px;color:#6B7280;line-height:1.5;margin-bottom:8px}
+.badge{display:inline-block;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.reward-box{margin-top:10px;padding:12px;background:#F0FDF4;border-radius:10px;border:1.5px solid #86EFAC}
+.reward-item{font-size:12px;color:#166534;margin-bottom:3px}
+.q-num{font-size:10.5px;font-weight:700;color:#FFAB00;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.q-text{font-size:14px;font-weight:700;color:#1A1A2E;line-height:1.4;margin-bottom:2px}
+.q-sub{font-size:11px;color:#6B7280;margin-bottom:9px}
+.req{color:#EF4444}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:2px solid #D1D5DB;border-radius:9px;cursor:pointer;font-size:13px;color:#374151;user-select:none;transition:.15s}
+.opt:hover{border-color:#166534;background:#F0FDF4}
+.opt.sel{border-color:#166534;background:#DCFCE7;color:#166534;font-weight:600}
+.dot{width:15px;height:15px;border:2px solid #D1D5DB;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.opt.sel .dot{border-color:#166534;background:#166534}
+.dot-inner{width:6px;height:6px;border-radius:50%;background:#fff;display:none}
+.opt.sel .dot-inner{display:block}
+.chk{width:15px;height:15px;border:2px solid #D1D5DB;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent}
+.opt.sel .chk{border-color:#166534;background:#166534;color:#fff}
+.txt-in{width:100%;padding:10px 12px;border:2px solid #D1D5DB;border-radius:9px;font-size:13.5px;background:#FAFAFA;font-family:inherit}
+.txt-in:focus{outline:none;border-color:#166534;background:#fff}
+.scale-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.sc{width:38px;height:38px;border:2px solid #D1D5DB;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:#6B7280;display:flex;align-items:center;justify-content:center}
+.sc:hover{border-color:#166534;color:#166534;background:#F0FDF4}
+.sc.sel{border-color:#166534;background:#166534;color:#fff}
+.scale-lbls{display:flex;justify-content:space-between;margin-top:4px;font-size:10.5px;color:#6B7280}
+.err{color:#EF4444;font-size:11px;margin-top:3px;display:none}
+.err.show{display:block}
+.card.invalid{border-left-color:#EF4444}
+.sub-wrap{text-align:center;margin-top:18px;padding-bottom:20px}
+.sub-btn{background:linear-gradient(135deg,#166534,#15803D);color:#fff;border:none;padding:14px 40px;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(22,101,52,.3);width:100%;max-width:320px}
+.success{display:none;text-align:center;padding:40px 20px;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+</style>
+<script>
+var A={};
+function pick(q,el,type){
+  var p=el.parentNode;
+  if(type==='r'){p.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');A[q]=el.querySelector('span').textContent.trim();}
+  else{el.classList.toggle('sel');A[q]=Array.from(p.querySelectorAll('.opt.sel')).map(function(o){return o.querySelector('span').textContent.trim();});}
+  var e=document.getElementById('err-'+q);if(e)e.classList.remove('show');
+  updBar();
+}
+function sc(q,v,btn){
+  btn.parentNode.querySelectorAll('.sc').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');A[q]=v;
+  var e=document.getElementById('err-'+q);if(e)e.classList.remove('show');
+  updBar();
+}
+function updBar(){
+  var c=0;
+  if(document.getElementById('q1')&&document.getElementById('q1').value.trim())c++;
+  if(document.getElementById('q2')&&document.getElementById('q2').value.trim())c++;
+  if(A.q3)c++;if(A.q4)c++;if(A.q5)c++;if(A.q6)c++;
+  document.getElementById('pb').style.width=(c/6*100)+'%';
+}
+</script>
+</head><body>
+<div class="hdr">
+  <div class="hdr-row">
+    <div class="logo">🏆 <span>Saheli</span> AI</div>
+    <div class="lang-bar">
+      <a href="post-hi.html" class="active">🇮🇳 हिंदी</a>
+      <a href="post-en.html">🇬🇧 English</a>
+    </div>
+  </div>
+  <div class="pbar-wrap"><div class="pbar" id="pb"></div></div>
+</div>
+<div class="wrap"><div id="formBody">
+<div class="card intro">
+  <div class="intro-title">Final Impact Survey — अंतिम सर्वे 🏆</div>
+  <div class="intro-sub">Saheli AI पायलट पूरा करने पर धन्यवाद! सिर्फ 3 मिनट में certificate और data voucher claim करें।</div>
+  <div class="badge">🎁 Certificate + 1GB Data Recharge</div>
+  <div class="reward-box">
+    <div class="reward-item">🏅 <b>Corporate Readiness Certificate</b> — LinkedIn के लिए perfect</div>
+    <div class="reward-item">📲 <b>1GB Jio / Airtel Recharge</b> — 24 घंटे में WhatsApp पर</div>
+  </div>
+</div>
+<div class="card" id="card-q1">
+  <div class="q-num">Question 1 of 6</div>
+  <div class="q-text">अपना Secret Session Code लिखिए <span class="req">*</span></div>
+  <div class="q-sub">(WhatsApp पर भेजा गया था — जैसे: SAHELI-ASP-2026)</div>
+  <input class="txt-in" id="q1" placeholder="SAHELI-XXXXX-2026" oninput="updBar()">
+  <div class="err" id="err-q1">Session code required है ❗</div>
+</div>
+<div class="card" id="card-q2">
+  <div class="q-num">Question 2 of 6</div>
+  <div class="q-text">अपना first name लिखिए <span class="req">*</span></div>
+  <div class="q-sub">(Pre-survey में जो लिखा था वही)</div>
+  <input class="txt-in" id="q2" placeholder="जैसे: Priya, Anjali..." oninput="updBar()">
+  <div class="err" id="err-q2">Name required है ❗</div>
+</div>
+<div class="card" id="card-q3">
+  <div class="q-num">Question 3 of 6</div>
+  <div class="q-text">1 से 5 — ABHI resume corporate standards पर कैसा है? <span class="req">*</span></div>
+  <div class="q-sub">(पहला score याद है? Compare करो!)</div>
+  <div class="scale-row">
+    <button class="sc" type="button" onclick="sc('q3',1,this)">1</button>
+    <button class="sc" type="button" onclick="sc('q3',2,this)">2</button>
+    <button class="sc" type="button" onclick="sc('q3',3,this)">3</button>
+    <button class="sc" type="button" onclick="sc('q3',4,this)">4</button>
+    <button class="sc" type="button" onclick="sc('q3',5,this)">5</button>
+  </div>
+  <div class="scale-lbls"><span>बिल्कुल नहीं</span><span>पूरी Confidence</span></div>
+  <div class="err" id="err-q3">Value चुनें ❗</div>
+</div>
+<div class="card" id="card-q4">
+  <div class="q-num">Question 4 of 6</div>
+  <div class="q-text">क्या नए realistic job roles पता चले? <span class="req">*</span></div>
+  <div class="opts" id="opt-q4">
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, बहुत से नए roles मिले</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, 2-3 specific roles साफ़ समझ आए</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>थोड़ा, पर अभी भी थोड़ा confused हूँ</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>नहीं, कुछ नया नहीं मिला</span></div>
+  </div>
+  <div class="err" id="err-q4">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q5">
+  <div class="q-num">Question 5 of 6</div>
+  <div class="q-text">0 से 10 — Saheli AI अपनी saheli को recommend करेंगी? <span class="req">*</span></div>
+  <div class="q-sub">(0 = Never, 10 = Zaroor haan!)</div>
+  <div class="scale-row">
+    <button class="sc" type="button" onclick="sc('q5',0,this)">0</button><button class="sc" type="button" onclick="sc('q5',2,this)">2</button>
+    <button class="sc" type="button" onclick="sc('q5',4,this)">4</button><button class="sc" type="button" onclick="sc('q5',6,this)">6</button>
+    <button class="sc" type="button" onclick="sc('q5',8,this)">8</button><button class="sc" type="button" onclick="sc('q5',10,this)">10</button>
+  </div>
+  <div class="scale-lbls"><span>0: Never</span><span>10: Zaroor!</span></div>
+  <div class="err" id="err-q5">Rating चुनें ❗</div>
+</div>
+<div class="card" id="card-q6">
+  <div class="q-num">Question 6 of 6</div>
+  <div class="q-text">Data voucher के लिए UPI ID या Phone number दें</div>
+  <div class="q-sub">(Optional — सिर्फ reward पाने के लिए)</div>
+  <input class="txt-in" id="q6" placeholder="UPI ID या Mobile number (optional)">
+</div>
+<div class="sub-wrap">
+  <button class="sub-btn" type="button" onclick="doSubmit()">🏆 Submit करें &amp; Certificate पाएं</button>
+</div>
+</div>
+<div class="success" id="successDiv">
+  <div style="font-size:48px;margin-bottom:12px">🎓🌸</div>
+  <h2 style="color:#166534;font-size:20px;margin-bottom:8px">Bahut Shukriya! Impact Recorded!</h2>
+  <p style="color:#4B5563;font-size:13px;line-height:1.6">Aapka Corporate Readiness Certificate aur 1GB data voucher 24 hours mein WhatsApp pe milega! 🏆</p>
+</div>
+</div>
+<script>
+function doSubmit(){
+  var ok=true,first=null;
+  function fail(q){document.getElementById('err-'+q).classList.add('show');document.getElementById('card-'+q).classList.add('invalid');if(!first)first='card-'+q;ok=false;}
+  if(!document.getElementById('q1').value.trim())fail('q1');
+  if(!document.getElementById('q2').value.trim())fail('q2');
+  if(!A.q3)fail('q3');if(!A.q4)fail('q4');if(A.q5===undefined)fail('q5');
+  if(!ok){document.getElementById(first).scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var payload={survey_type:'post',secretCode:document.getElementById('q1').value.trim(),name:document.getElementById('q2').value.trim(),resumeConfidence_POST:A.q3,roleDiscovery:A.q4,npsScore:A.q5,upiForReward:document.getElementById('q6').value.trim()};
+  var ls=JSON.parse(localStorage.getItem('saheli_post')||'[]');ls.push(payload);localStorage.setItem('saheli_post',JSON.stringify(ls));
+  try{fetch('http://localhost:3000/pilot/survey/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});}catch(e){}
+  document.getElementById('formBody').style.display='none';
+  document.getElementById('successDiv').style.display='block';
+  document.getElementById('pb').style.width='100%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body></html>

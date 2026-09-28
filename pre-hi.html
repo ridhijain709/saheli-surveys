@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="hi"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Saheli AI — बेसलाइन सर्वे</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#F4F7FB;color:#1A1A2E;overflow-x:hidden}
+.hdr{background:linear-gradient(135deg,#1F497D,#0747A6);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.hdr-row{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.logo{font-size:19px;font-weight:900}.logo span{color:#FFAB00}
+.lang-bar{display:flex;gap:6px}
+.lang-bar a{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;background:rgba(255,255,255,.15);color:#E2E8F0;transition:.15s}
+.lang-bar a.active{background:#FFAB00;color:#1F497D}
+.pbar-wrap{max-width:680px;margin:8px auto 0;background:rgba(255,255,255,.2);height:4px;border-radius:3px}
+.pbar{height:4px;background:#FFAB00;border-radius:3px;width:0;transition:width .3s}
+.wrap{max-width:680px;margin:0 auto;padding:14px 12px 50px}
+.card{background:#fff;border-radius:14px;padding:18px 18px;box-shadow:0 1px 6px rgba(0,0,0,.07);border-left:5px solid #1F497D;margin-bottom:12px}
+.card.intro{border-left-color:#DB2777}
+.intro-title{font-size:18px;font-weight:900;color:#1F497D;margin-bottom:5px}
+.intro-sub{font-size:12.5px;color:#6B7280;line-height:1.5;margin-bottom:8px}
+.badge{display:inline-block;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.q-num{font-size:10.5px;font-weight:700;color:#FFAB00;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.q-text{font-size:14px;font-weight:700;color:#1A1A2E;line-height:1.4;margin-bottom:2px}
+.q-sub{font-size:11px;color:#6B7280;margin-bottom:9px}
+.req{color:#EF4444}
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:center;gap:9px;padding:9px 12px;border:2px solid #D1D5DB;border-radius:9px;cursor:pointer;font-size:13px;color:#374151;user-select:none;transition:.15s}
+.opt:hover{border-color:#1F497D;background:#EFF6FF}
+.opt.sel{border-color:#1F497D;background:#DBEAFE;color:#1F497D;font-weight:600}
+.dot{width:15px;height:15px;border:2px solid #D1D5DB;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.opt.sel .dot{border-color:#1F497D;background:#1F497D}
+.dot-inner{width:6px;height:6px;border-radius:50%;background:#fff;display:none}
+.opt.sel .dot-inner{display:block}
+.chk{width:15px;height:15px;border:2px solid #D1D5DB;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent}
+.opt.sel .chk{border-color:#1F497D;background:#1F497D;color:#fff}
+.txt-in{width:100%;padding:10px 12px;border:2px solid #D1D5DB;border-radius:9px;font-size:13.5px;background:#FAFAFA;font-family:inherit}
+.txt-in:focus{outline:none;border-color:#1F497D;background:#fff}
+.scale-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.sc{width:38px;height:38px;border:2px solid #D1D5DB;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;color:#6B7280;display:flex;align-items:center;justify-content:center}
+.sc:hover{border-color:#1F497D;color:#1F497D;background:#EFF6FF}
+.sc.sel{border-color:#1F497D;background:#1F497D;color:#fff}
+.scale-lbls{display:flex;justify-content:space-between;margin-top:4px;font-size:10.5px;color:#6B7280}
+.err{color:#EF4444;font-size:11px;margin-top:3px;display:none}
+.err.show{display:block}
+.card.invalid{border-left-color:#EF4444}
+.sub-wrap{text-align:center;margin-top:18px;padding-bottom:20px}
+.sub-btn{background:linear-gradient(135deg,#1F497D,#0747A6);color:#fff;border:none;padding:14px 40px;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(31,73,125,.3);width:100%;max-width:320px}
+.sub-btn:hover{opacity:.9}
+.success{display:none;text-align:center;padding:40px 20px;background:#fff;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.code-box{background:#EFF6FF;border:2px dashed #2563EB;padding:12px;border-radius:12px;font-family:monospace;font-size:16px;font-weight:900;color:#1F497D;margin:14px 0}
+</style>
+<script>
+var A={};
+function pick(q,el,type){
+  var p=el.parentNode;
+  if(type==='r'){
+    p.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});
+    el.classList.add('sel');
+    A[q]=el.querySelector('span').textContent.trim();
+  } else {
+    el.classList.toggle('sel');
+    A[q]=Array.from(p.querySelectorAll('.opt.sel')).map(function(o){return o.querySelector('span').textContent.trim();});
+  }
+  var e=document.getElementById('err-'+q);
+  if(e)e.classList.remove('show');
+  updBar();
+}
+function sc(q,v,btn){
+  btn.parentNode.querySelectorAll('.sc').forEach(function(b){b.classList.remove('sel');});
+  btn.classList.add('sel');
+  A[q]=v;
+  var e=document.getElementById('err-'+q);
+  if(e)e.classList.remove('show');
+  updBar();
+}
+function updBar(){
+  var total=window.TOTAL||10;
+  var filled=window.COUNT?window.COUNT():0;
+  document.getElementById('pb').style.width=(filled/total*100)+'%';
+}
+</script>
+
+</head><body>
+<div class="hdr">
+  <div class="hdr-row">
+    <div class="logo">🌸 <span>Saheli</span> AI</div>
+    <div class="lang-bar">
+      <a href="pre-hi.html" class="active">🇮🇳 हिंदी</a>
+      <a href="pre-en.html">🇬🇧 English</a>
+    </div>
+  </div>
+  <div class="pbar-wrap"><div class="pbar" id="pb"></div></div>
+</div>
+<div class="wrap"><div id="formBody">
+<div class="card intro">
+  <div class="intro-title">Baseline Career Survey — बेसलाइन सर्वे 🌸</div>
+  <div class="intro-sub">यह फॉर्म सिर्फ <b>2-3 मिनट</b> में पूरा होता है।<br>पूरा करने के बाद आपको <b>Saheli AI access code</b> मिलेगा।</div>
+  <div class="badge">🔒 100% Anonymous &amp; Private — परिवार को पता नहीं चलेगा</div>
+</div>
+<div class="card" id="card-q1">
+  <div class="q-num">Question 1 of 10</div>
+  <div class="q-text">अपना first name लिखिए <span class="req">*</span></div>
+  <div class="q-sub">(सरनेम मत लिखिए — पूरी तरह गुप्त रहेगा)</div>
+  <input class="txt-in" id="q1" placeholder="जैसे: Priya, Anjali, Neha..." oninput="updBar()">
+  <div class="err" id="err-q1">Name required है ❗</div>
+</div>
+<div class="card" id="card-q2">
+  <div class="q-num">Question 2 of 10</div>
+  <div class="q-text">आप कौन से college में पढ़ती हैं? <span class="req">*</span></div>
+  <input class="txt-in" id="q2" placeholder="जैसे: Maa Shakumbhari University, Muzaffarnagar..." oninput="updBar()">
+  <div class="err" id="err-q2">College required है ❗</div>
+</div>
+<div class="card" id="card-q3">
+  <div class="q-num">Question 3 of 10</div>
+  <div class="q-text">आप अभी किस साल में हैं? <span class="req">*</span></div>
+  <div class="opts" id="opt-q3">
+    <div class="opt" onclick="pick('q3',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>Final Year (3rd Year / 6th Sem)</span></div>
+    <div class="opt" onclick="pick('q3',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>Final Year — 2-Year Program (2nd Year / 4th Sem)</span></div>
+    <div class="opt" onclick="pick('q3',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>Recently Graduated (0-6 महीने पहले)</span></div>
+    <div class="opt" onclick="pick('q3',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>Graduated 6-12 महीने पहले</span></div>
+  </div>
+  <div class="err" id="err-q3">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q4">
+  <div class="q-num">Question 4 of 10</div>
+  <div class="q-text">कौन सा degree course कर रही हैं? <span class="req">*</span></div>
+  <div class="opts" id="opt-q4">
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>BBA (Bachelor of Business Administration)</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>B.Com (Bachelor of Commerce)</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>BA (Bachelor of Arts)</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>B.Sc (Bachelor of Science)</span></div>
+    <div class="opt" onclick="pick('q4',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>Other / अन्य</span></div>
+  </div>
+  <div class="err" id="err-q4">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q5">
+  <div class="q-num">Question 5 of 10</div>
+  <div class="q-text">अभी तक professionally resume बनाया है? <span class="req">*</span></div>
+  <div class="opts" id="opt-q5">
+    <div class="opt" onclick="pick('q5',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, खुद से बनाया है</span></div>
+    <div class="opt" onclick="pick('q5',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, किसी की मदद से बनाया</span></div>
+    <div class="opt" onclick="pick('q5',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>नहीं, अभी तक नहीं बनाया</span></div>
+    <div class="opt" onclick="pick('q5',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, लेकिन confident नहीं हूँ</span></div>
+  </div>
+  <div class="err" id="err-q5">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q6">
+  <div class="q-num">Question 6 of 10</div>
+  <div class="q-text">1 से 5 — क्या रिज्यूमे corporate standards पर है? <span class="req">*</span></div>
+  <div class="q-sub">(1 = बिल्कुल नहीं, 5 = पूरी confidence)</div>
+  <div class="scale-row">
+    <button class="sc" type="button" onclick="sc('q6',1,this)">1</button>
+    <button class="sc" type="button" onclick="sc('q6',2,this)">2</button>
+    <button class="sc" type="button" onclick="sc('q6',3,this)">3</button>
+    <button class="sc" type="button" onclick="sc('q6',4,this)">4</button>
+    <button class="sc" type="button" onclick="sc('q6',5,this)">5</button>
+  </div>
+  <div class="scale-lbls"><span>बिल्कुल नहीं</span><span>पूरी Confidence</span></div>
+  <div class="err" id="err-q6">Value चुनें ❗</div>
+</div>
+<div class="card" id="card-q7">
+  <div class="q-num">Question 7 of 10</div>
+  <div class="q-text">क्या पता है कि degree के बाद कौन से jobs best हैं? <span class="req">*</span></div>
+  <div class="opts" id="opt-q7">
+    <div class="opt" onclick="pick('q7',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, clearly पता है</span></div>
+    <div class="opt" onclick="pick('q7',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>थोड़ा-थोड़ा पता है, specific नहीं</span></div>
+    <div class="opt" onclick="pick('q7',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>नहीं, कुछ समझ नहीं आता</span></div>
+    <div class="opt" onclick="pick('q7',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>सिर्फ 1-2 roles पता हैं</span></div>
+  </div>
+  <div class="err" id="err-q7">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q8">
+  <div class="q-num">Question 8 of 10</div>
+  <div class="q-text">क्या कभी mock interview feedback मिला है? <span class="req">*</span></div>
+  <div class="opts" id="opt-q8">
+    <div class="opt" onclick="pick('q8',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, college placement cell से</span></div>
+    <div class="opt" onclick="pick('q8',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>हाँ, senior या mentor से</span></div>
+    <div class="opt" onclick="pick('q8',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>सिर्फ YouTube videos देखे हैं</span></div>
+    <div class="opt" onclick="pick('q8',this,'r')"><div class="dot"><div class="dot-inner"></div></div><span>नहीं, कभी नहीं</span></div>
+  </div>
+  <div class="err" id="err-q8">एक option चुनें ❗</div>
+</div>
+<div class="card" id="card-q9">
+  <div class="q-num">Question 9 of 10</div>
+  <div class="q-text">Job ढूंढने में सबसे बड़ी problem क्या है? <span class="req">*</span></div>
+  <div class="q-sub">(एक से ज़्यादा select कर सकती हैं)</div>
+  <div class="opts" id="opt-q9">
+    <div class="opt" onclick="pick('q9',this,'c')"><div class="chk">✓</div><span>Resume professionally नहीं लगा</span></div>
+    <div class="opt" onclick="pick('q9',this,'c')"><div class="chk">✓</div><span>पता नहीं कौन सी companies hire करती हैं</span></div>
+    <div class="opt" onclick="pick('q9',this,'c')"><div class="chk">✓</div><span>Interview में confidence नहीं आता</span></div>
+    <div class="opt" onclick="pick('q9',this,'c')"><div class="chk">✓</div><span>Family को अभी पता नहीं चलना चाहिए</span></div>
+    <div class="opt" onclick="pick('q9',this,'c')"><div class="chk">✓</div><span>Expensive coaching afford नहीं कर सकती</span></div>
+  </div>
+  <div class="err" id="err-q9">कम से कम 1 चुनें ❗</div>
+</div>
+<div class="card" id="card-q10">
+  <div class="q-num">Question 10 of 10</div>
+  <div class="q-text">1 से 10 — Job मिलने की overall confidence score? <span class="req">*</span></div>
+  <div class="q-sub">(1 = बहुत कम, 10 = बहुत confident)</div>
+  <div class="scale-row">
+    <button class="sc" type="button" onclick="sc('q10',1,this)">1</button><button class="sc" type="button" onclick="sc('q10',2,this)">2</button>
+    <button class="sc" type="button" onclick="sc('q10',3,this)">3</button><button class="sc" type="button" onclick="sc('q10',4,this)">4</button>
+    <button class="sc" type="button" onclick="sc('q10',5,this)">5</button><button class="sc" type="button" onclick="sc('q10',6,this)">6</button>
+    <button class="sc" type="button" onclick="sc('q10',7,this)">7</button><button class="sc" type="button" onclick="sc('q10',8,this)">8</button>
+    <button class="sc" type="button" onclick="sc('q10',9,this)">9</button><button class="sc" type="button" onclick="sc('q10',10,this)">10</button>
+  </div>
+  <div class="scale-lbls"><span>बहुत कम</span><span>बहुत Confident</span></div>
+  <div class="err" id="err-q10">Value चुनें ❗</div>
+</div>
+<div class="sub-wrap">
+  <button class="sub-btn" type="button" onclick="doSubmit()">✅ Submit करें &amp; Access लें</button>
+</div>
+</div>
+<div class="success" id="successDiv">
+  <div style="font-size:48px;margin-bottom:12px">🌸🎉</div>
+  <h2 style="color:#1F497D;font-size:20px;margin-bottom:8px">Shukriya! Form Submit Ho Gaya!</h2>
+  <p style="color:#4B5563;font-size:13px;line-height:1.6;margin-bottom:14px">Aapka baseline record ho gaya. Yeh lo aapka official pilot access code:</p>
+  <div class="code-box" id="codeDisplay">SAHELI-ASP-2026</div>
+  <p style="color:#059669;font-size:12px;font-weight:700">🔒 Screenshot save kar lein. WhatsApp pe bhi bheja jaayega.</p>
+</div>
+</div>
+<script>
+window.TOTAL=10;
+window.COUNT=function(){
+  var c=0;
+  if(document.getElementById('q1').value.trim())c++;
+  if(document.getElementById('q2').value.trim())c++;
+  if(A.q3)c++;if(A.q4)c++;if(A.q5)c++;if(A.q6)c++;if(A.q7)c++;if(A.q8)c++;
+  if(A.q9&&A.q9.length)c++;if(A.q10)c++;
+  return c;
+};
+function doSubmit(){
+  var ok=true,first=null;
+  function fail(q){document.getElementById('err-'+q).classList.add('show');document.getElementById('card-'+q).classList.add('invalid');if(!first)first='card-'+q;ok=false;}
+  if(!document.getElementById('q1').value.trim())fail('q1');
+  if(!document.getElementById('q2').value.trim())fail('q2');
+  if(!A.q3)fail('q3');if(!A.q4)fail('q4');if(!A.q5)fail('q5');
+  if(!A.q6)fail('q6');if(!A.q7)fail('q7');if(!A.q8)fail('q8');
+  if(!A.q9||!A.q9.length)fail('q9');if(!A.q10)fail('q10');
+  if(!ok){document.getElementById(first).scrollIntoView({behavior:'smooth',block:'center'});return;}
+  var payload={survey_type:'pre',name:document.getElementById('q1').value.trim(),college:document.getElementById('q2').value.trim(),year:A.q3,degree:A.q4,hasResume:A.q5,resumeConfidence_1to5:A.q6,jobAwareness:A.q7,mockInterviewExp:A.q8,biggestProblems:A.q9,overallJobConfidence_1to10:A.q10};
+  var ls=JSON.parse(localStorage.getItem('saheli_pre')||'[]');ls.push(payload);localStorage.setItem('saheli_pre',JSON.stringify(ls));
+  try{fetch('http://localhost:3000/pilot/survey/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});}catch(e){}
+  document.getElementById('formBody').style.display='none';
+  document.getElementById('successDiv').style.display='block';
+  document.getElementById('pb').style.width='100%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body></html>
