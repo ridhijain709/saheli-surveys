@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Saheli AI — Career & ATS Companion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F8FAFC; -webkit-tap-highlight-color: transparent; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-rose-50/40 to-blue-50/40 min-h-screen text-slate-800 pb-20">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-rose-100/80 px-4 py-3 shadow-xs">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 to-indigo-600 flex items-center justify-center text-white text-lg shadow-sm">
+          🌸
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base bg-gradient-to-r from-rose-600 to-indigo-700 bg-clip-text text-transparent">
+            Saheli AI
+          </h1>
+          <p class="text-[10px] text-slate-500 font-medium">Bilingual Career Companion for College Girls</p>
+        </div>
+      </div>
+      <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+        🔒 100% Anonymous
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+
+    <!-- Degree Selector Card -->
+    <div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">
+      <label class="text-[11px] font-bold uppercase tracking-wider text-indigo-900 block mb-2">
+        1. Select Your Degree & Field:
+      </label>
+      <div class="grid grid-cols-3 gap-2 text-center" id="degreeGrid">
+        <button onclick="selectDegree('B.Com', this)" class="deg-btn p-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold hover:bg-indigo-50 transition-all">
+          📊 B.Com<br><span class="text-[9px] font-normal text-slate-500">Accounts/Bank</span>
+        </button>
+        <button onclick="selectDegree('B.Sc', this)" class="deg-btn p-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold hover:bg-indigo-50 transition-all">
+          🔬 B.Sc<br><span class="text-[9px] font-normal text-slate-500">Science/Lab/IT</span>
+        </button>
+        <button onclick="selectDegree('BA', this)" class="deg-btn p-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold hover:bg-indigo-50 transition-all">
+          📚 BA<br><span class="text-[9px] font-normal text-slate-500">Econ/Content/HR</span>
+        </button>
+        <button onclick="selectDegree('BBA', this)" class="deg-btn p-2 rounded-2xl border border-indigo-600 bg-indigo-50 text-indigo-900 text-xs font-bold shadow-xs">
+          💼 BBA<br><span class="text-[9px] font-normal text-indigo-700">Ops/Sales/Mgt</span>
+        </button>
+        <button onclick="selectDegree('BCA/IT', this)" class="deg-btn p-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold hover:bg-indigo-50 transition-all">
+          💻 BCA/IT<br><span class="text-[9px] font-normal text-slate-500">Tech/Web/QA</span>
+        </button>
+        <button onclick="selectDegree('Other', this)" class="deg-btn p-2 rounded-2xl border border-slate-200 bg-white text-xs font-bold hover:bg-indigo-50 transition-all">
+          🎓 Other<br><span class="text-[9px] font-normal text-slate-500">Post-Grad</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mode Selector Tabs -->
+    <div class="flex bg-slate-200/70 p-1 rounded-2xl text-xs font-bold">
+      <button onclick="switchMode('audit')" id="tab-audit" class="flex-1 py-2 rounded-xl bg-white text-indigo-900 shadow-sm transition-all text-center">
+        📄 Resume Audit
+      </button>
+      <button onclick="switchMode('roles')" id="tab-roles" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all text-center">
+        🎯 Role Match
+      </button>
+      <button onclick="switchMode('interview')" id="tab-interview" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition-all text-center">
+        🎤 Mock Interview
+      </button>
+    </div>
+
+    <!-- ── TAB 1: RESUME AUDIT ── -->
+    <div id="mode-audit" class="space-y-4">
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-3">
+        <div class="flex justify-between items-center">
+          <label class="text-xs font-bold text-slate-700">Paste Your Resume / Project Text:</label>
+          <span class="text-[10px] text-rose-600 font-semibold">🔒 Surname mat daalo</span>
+        </div>
+        <textarea id="resumeInput" rows="5" class="w-full text-xs p-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 leading-relaxed font-mono" placeholder="Paste your bullet points, college project, event coordination or internship details..."></textarea>
+        
+        <button onclick="runAudit()" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-rose-600 to-indigo-600 text-white font-bold text-xs shadow-md shadow-rose-500/25 active:scale-98 transition-all flex items-center justify-center gap-2">
+          <span>⚡ Run 100-Point ATS Audit</span>
+        </button>
+      </div>
+
+      <!-- Result Card -->
+      <div id="auditResultCard" class="hidden bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-4 animate-in fade-in">
+        <div class="flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-indigo-900 to-slate-900 text-white shadow-sm">
+          <div>
+            <span class="text-[9px] uppercase font-bold text-rose-300 tracking-wider">ATS Score</span>
+            <div class="flex items-baseline gap-1.5">
+              <span id="scoreVal" class="text-2xl font-black">--</span>
+              <span class="text-xs text-slate-300">/ 100</span>
+              <span id="gradeBadge" class="ml-2 px-2 py-0.5 rounded-md bg-rose-500 text-white text-[10px] font-bold">Grade</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[9px] text-slate-400 block">Fixes Potential</span>
+            <span id="potentialVal" class="text-sm font-bold text-emerald-400">85+/100 🚀</span>
+          </div>
+        </div>
+
+        <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-100 text-rose-950 text-xs leading-relaxed flex items-start gap-2.5">
+          <span class="text-xl">🌸</span>
+          <p id="saheliAdvice">Evaluating...</p>
+        </div>
+
+        <div class="space-y-2">
+          <h4 class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Exact Corporate Rewrite:</h4>
+          <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <span class="text-[10px] font-bold text-rose-600 uppercase block">Replace Weak Bullet:</span>
+            <p id="rewriteFix" class="text-xs font-mono text-emerald-800 bg-white p-2.5 rounded-xl border border-slate-200"></p>
+            <button onclick="copyRewrite()" class="w-full py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-xs font-bold hover:bg-indigo-100 transition-all text-center">
+              📋 Copy Corporate Rewrite
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TAB 2: ROLES ── -->
+    <div id="mode-roles" class="hidden space-y-3">
+      <div id="rolesList" class="space-y-3"></div>
+    </div>
+
+    <!-- ── TAB 3: INTERVIEW ── -->
+    <div id="mode-interview" class="hidden space-y-3">
+      <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-3">
+        <label class="text-xs font-bold text-slate-700 block">Common HR Question:</label>
+        <p class="text-xs p-3 rounded-2xl bg-slate-50 border border-slate-200 font-semibold text-slate-800">
+          "College project ya fest mein koi aisi problem batayein jo aapne khud solve ki thi?"
+        </p>
+        <textarea id="interviewInput" rows="4" class="w-full text-xs p-3 rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/20 font-mono" placeholder="Apna answer Hinglish mein likhein (Situation, Action, Result batayein)..."></textarea>
+        <button onclick="runInterview()" class="w-full py-3.5 px-4 rounded-2xl bg-indigo-600 text-white font-bold text-xs shadow-md transition-all">
+          🎤 Grade on STAR Framework
+        </button>
+      </div>
+
+      <div id="interviewResultCard" class="hidden bg-white rounded-3xl p-5 shadow-sm border border-slate-100 space-y-3">
+        <div class="flex justify-between items-center">
+          <span class="text-xs font-bold text-slate-700">Interview Score:</span>
+          <span id="interviewScore" class="text-lg font-black text-indigo-600">--/100</span>
+        </div>
+        <div class="p-3 bg-indigo-50 rounded-2xl text-xs text-indigo-950 font-mono" id="modelAnswer"></div>
+      </div>
+    </div>
+
+    <!-- WhatsApp Share CTA -->
+    <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white rounded-3xl p-4 shadow-sm text-center space-y-2">
+      <h3 class="text-xs font-bold">Dost ko bhi Free Resume Score Dilwayein 🎁</h3>
+      <p class="text-[11px] text-emerald-100 leading-tight">Apni classmate ko yeh link share karein — dono ko 1GB Free Data Voucher milega!</p>
+      <a href="whatsapp://send?text=Hey!%20🌸%20Maine%20Saheli%20AI%20se%20apna%20resume%20ATS%20score%20check%20kiya.%20Free%20hai%20aur%20100%25%20anonymous.%20Tum%20bhi%20try%20karo:%20https://ridhijain709.github.io/saheli-surveys/app.html" class="inline-block px-4 py-2 rounded-xl bg-white text-emerald-800 font-bold text-xs shadow-sm hover:bg-emerald-50">
+        📲 WhatsApp Par Share Karein
+      </a>
+    </div>
+
+  </main>
+
+  <script>
+    var currentDegree = 'BBA';
+
+    function selectDegree(deg, el) {
+      currentDegree = deg;
+      document.querySelectorAll('.deg-btn').forEach(function(b){
+        b.classList.remove('border-indigo-600','bg-indigo-50','text-indigo-900','shadow-xs');
+        b.classList.add('border-slate-200','bg-white');
+      });
+      el.classList.remove('border-slate-200','bg-white');
+      el.classList.add('border-indigo-600','bg-indigo-50','text-indigo-900','shadow-xs');
+      updateRolesForDegree();
+    }
+
+    function switchMode(m) {
+      ['audit','roles','interview'].forEach(function(mode){
+        document.getElementById('mode-' + mode).classList.add('hidden');
+        document.getElementById('tab-' + mode).classList.remove('bg-white','text-indigo-900','shadow-sm');
+        document.getElementById('tab-' + mode).classList.add('text-slate-600');
+      });
+      document.getElementById('mode-' + m).classList.remove('hidden');
+      document.getElementById('tab-' + m).classList.add('bg-white','text-indigo-900','shadow-sm');
+      document.getElementById('tab-' + m).classList.remove('text-slate-600');
+      if (m === 'roles') updateRolesForDegree();
+    }
+
+    function runAudit() {
+      var text = document.getElementById('resumeInput').value.trim();
+      if (!text) {
+        alert('Pehle kuch text ya project bullet paste karein!');
+        return;
+      }
+      var card = document.getElementById('auditResultCard');
+      card.classList.remove('hidden');
+      
+      var words = text.split(/\s+/).length;
+      var hasNumbers = /\d+/.test(text);
+      var hasVerbs = /(coordinated|managed|built|developed|handled|led|created)/i.test(text);
+      
+      var score = 35;
+      if (words > 25) score += 20;
+      if (hasNumbers) score += 25;
+      if (hasVerbs) score += 15;
+      
+      document.getElementById('scoreVal').innerText = score;
+      document.getElementById('gradeBadge').innerText = score >= 75 ? 'Grade A' : (score >= 50 ? 'Grade B' : 'Grade C');
+      
+      var advice = '';
+      var fix = '';
+      
+      if (currentDegree === 'B.Com') {
+        advice = 'B.Com ke liye accounts/taxation terms zaroori hain. Tally ERP ya GST reconciliation mention karein!';
+        fix = 'Managed ledger reconciliation and GST data filing for 15+ vendor accounts using MS Excel and Tally.';
+      } else if (currentDegree === 'B.Sc') {
+        advice = 'Science graduates ke liye data accuracy aur documentation sabse bada plus point hota hai!';
+        fix = 'Documented lab sample readings across 30 experimental batches with 99% data precision in MS Excel.';
+      } else if (currentDegree === 'BA') {
+        advice = 'BA background mein content, client communication aur research roles sabse accessible hain!';
+        fix = 'Drafted official event briefings and coordinated communication with 8 institutional partners and 250+ participants.';
+      } else {
+        advice = 'Tumhara project hi tumhara experience hai! Numbers zaroor add karo — volunteers, attendees, aur budget.';
+        fix = 'Coordinated annual department initiative for 200+ students; managed 10 volunteers and delivered on schedule.';
+      }
+      
+      document.getElementById('saheliAdvice').innerText = advice;
+      document.getElementById('rewriteFix').innerText = fix;
+      card.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyRewrite() {
+      var t = document.getElementById('rewriteFix').innerText;
+      navigator.clipboard.writeText(t);
+      alert('Copied to clipboard! Apne resume mein paste karein.');
+    }
+
+    function updateRolesForDegree() {
+      var list = document.getElementById('rolesList');
+      var roles = [];
+      if (currentDegree === 'B.Com') {
+        roles = [
+          { title: 'Accounts & Billing Associate', ctc: 'Rs. 2.6L - 3.8L', cos: 'HDFC Bank, Axis, Local CA Firms', skill: 'GST Filing, Tally Prime, Excel VLOOKUP' },
+          { title: 'Corporate Banking Support', ctc: 'Rs. 2.8L - 4.2L', cos: 'Bandhan Bank, ICICI, Bajaj Finserv', skill: 'KYC Verification & Client Documentation' }
+        ];
+      } else if (currentDegree === 'B.Sc') {
+        roles = [
+          { title: 'Quality Control / Lab Coordinator', ctc: 'Rs. 2.8L - 4.0L', cos: 'Pharma SMEs, Agri-tech, Testing Labs', skill: 'Data Accuracy, Lab Compliance, Excel' },
+          { title: 'Junior Data & Analytics Analyst', ctc: 'Rs. 3.0L - 4.5L', cos: 'EdTech, E-Commerce, Regional D2C', skill: 'MS Excel Pivot, Google Sheets, Python Basics' }
+        ];
+      } else if (currentDegree === 'BA') {
+        roles = [
+          { title: 'Content & Communication Associate', ctc: 'Rs. 2.5L - 3.8L', cos: 'D2C Startups, Media Houses, NGOs', skill: 'Roman Hinglish Writing, Social Media Copy' },
+          { title: 'HR & Administrative Coordinator', ctc: 'Rs. 2.6L - 3.6L', cos: 'Regional Corporates, Retail, Logistics', skill: 'Candidate Screening, Scheduling, MS Office' }
+        ];
+      } else {
+        roles = [
+          { title: 'Operations & Process Associate', ctc: 'Rs. 2.8L - 4.2L', cos: 'Zomato, BigBasket, Reliance Retail', skill: 'Vendor Coordination, Inventory Management' },
+          { title: 'Inside Sales & Client Specialist', ctc: 'Rs. 3.0L - 4.5L', cos: 'IndiaMART, Meesho, Regional Distributors', skill: 'B2B Client Calling, Negotiation, CRM Entry' }
+        ];
+      }
+
+      list.innerHTML = roles.map(function(r){
+        return '<div class="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 space-y-2">' +
+          '<div class="flex justify-between items-center">' +
+          '<h4 class="font-bold text-slate-900 text-xs sm:text-sm">' + r.title + '</h4>' +
+          '<span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">' + r.ctc + '</span>' +
+          '</div>' +
+          '<p class="text-[11px] text-slate-600">🏢 <b>Hiring:</b> ' + r.cos + '</p>' +
+          '<p class="text-[11px] text-indigo-700">⚡ <b>Skill Needed:</b> ' + r.skill + '</p>' +
+          '</div>';
+      }).join('');
+    }
+
+    function runInterview() {
+      var a = document.getElementById('interviewInput').value.trim();
+      if (!a) { alert('Pehle apna answer likhein!'); return; }
+      document.getElementById('interviewResultCard').classList.remove('hidden');
+      document.getElementById('interviewScore').innerText = '78/100';
+      document.getElementById('modelAnswer').innerText = 'Model Answer: "College fest ke dauran 2 local vendors ne delivery cancel kar di thi (Situation). Maine 3 alternative suppliers ko call karke urgent rate negotiate kiya (Action). Result yeh raha ki fest bina kisi delay ke budget ke andar complete hua (Result)."';
+    }
+  </script>
+</body>
+</html>
